@@ -14,5 +14,5 @@ exports.answer = function(req,res) {
 
 // get /author
 exports.author = function(req,res) {
-	res.render('author',{autor: 'Javier Wiesse',foto : '/images/foto.jpg',video: '/images/ContaminaciondelAgua.mp4'} );
+	res.render('author',{autor: 'Javier Wiesse',foto : '/images/foto.JPG',video: '/images/ContaminaciondelAgua.mp4'} );
 };
