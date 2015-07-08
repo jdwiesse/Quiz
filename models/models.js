@@ -34,9 +34,9 @@ exports.Quiz = Quiz; //exportar definicion de quiz
 sequelize.sync().success(function(){
 	Quiz.count().success(function(count){
 	  if(count===0){
-		Quiz.create({pregunta : 'Capital de italia',
+		Quiz.create({tema : 'humanidades',pregunta : 'Capital de italia',
 				respuesta : 'Roma'});
-		Quiz.create({pregunta : 'Capital de Portugal',
+		Quiz.create({tema : 'humanidades',pregunta : 'Capital de Portugal',
 				respuesta : 'Lisboa'})
 		.success(function(){console.log('base datos inicializada')});
 };});

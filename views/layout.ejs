@@ -20,14 +20,7 @@
     		<h2>Quiz <span>: el juego de las preguntas</span></h2>
 	</header>
 	<section class="main" id="s1">
-	<% if (errors.length) { %>
-		<span id='ErrorMsgs'>
-		Corregir errores :<br/>
-		<% for (var i in errors) { %>
-		<span <%= errors[i].message %> </span><br/>
-		<% } %>
-		</span>
-	<% } %>
+
 
 
 
@@ -35,7 +28,20 @@
 	</section>
 	<nav class="main" id="n1" role="navigation">
 		<span><a href="/">Inicio</a></span>
-		<span><a href="/quizes"> Preguntas</a></span>
+	
+	<span> 
+	<form method="get" action="/quizes">
+	<select name="tema">	
+		<option value="otro" selected > Otro</option>
+		<option value="humanidades" > Humanidades</option>
+		<option value="ocio" > Ocio</option>
+		<option value="ciencia" > Ciencia</option>
+		<option value="tecnologia" > tecnologia</option>
+	</select>  
+		<input type ="submit" value="Preguntas">
+ 	</form> 
+	</span> <br />
+
 	<span><a href="/quizes/buscar"> Buscar </a></span>
 	<span><a href="/author"> Creditos</a></span>
 	</nav>
