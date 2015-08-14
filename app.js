@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var partials = require('express-partials');
 var methodOverride = require('method-override');
-
+var session = require('express-session');
 var routes = require('./routes/index');
 
 
@@ -22,9 +22,43 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
+app.use(cookieParser('Quiz 2015'));
+app.use(session());
 app.use(cookieParser());
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(function(req, res ,next) {
+
+// guarda path en session redir para depsues de login
+if (!req.path.match(/\/login|\/logout/)) {
+	req.session.redir = req.path;
+}
+
+// hacer visible req.session en las vistas
+res.locals.session = req.session;
+next();
+});
+
+app.use(function(req, res, next) {
+    if (req.session.user) {
+        console.log("Validando sesion: ");
+        console.log(req.session.user);
+        var newTime = (new Date()).getTime();
+        var lastTime = (new Date(req.session.user.lastAccess)).getTime();
+
+        console.log("Tiempo: " + newTime + " - " + lastTime + " = " + (newTime - lastTime));
+        if ((newTime - lastTime) > (2 * 60 * 1000)) {
+            console.log("Tiempo expirado!");
+            delete req.session.user;
+        } else {
+            req.session.user.lastAccess = new Date();
+            console.log("Nuevo lastAccess: " + req.session.user.lastAccess);
+        }
+    }
+    next();
+});
+
 
 app.use('/', routes);
 

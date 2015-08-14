@@ -3,7 +3,10 @@ var models = require('../models/models.js');
 //autoload -factoriza el codigo si ruta incluye :quisId
 
 exports.load = function(req,res,next,quizId){
-	models.Quiz.find(quizId).then(
+
+	models.Quiz.find({ where: {id : Number(quizId)},
+					include: [{ model: models.Comment }]
+		}).then(
 	function(quiz) {
 	   if(quiz) {
 		req.quiz =quiz;
@@ -113,4 +116,51 @@ console.log("hola");
 	req.quiz.destroy().then( function(){
 		res.redirect('/quizes');
 	}).catch(function(error){next(erros)})
+};
+
+
+//GET /quizes/statistics
+
+exports.statistics = function(req, res) {
+
+    
+    models.Quiz.findAll({include: [{ model: models.Comment , required :false}]}).then(function(quizes) {
+        var estadisticas = {
+            numeroPreguntas: 0,
+            numeroComentarios: 0,
+            mediaComentarios: 0,
+            numeroPreguntasSinComentarios: 0,
+            numeroPreguntasConComentarios: 0
+        };
+
+     for (var i = 0; i < quizes.length; i++) {
+            estadisticas.numeroPreguntas++;
+    //        console.log('-----------------------------------------------------------------');
+      //      console.log(quizes[i].pregunta);
+        //    console.log(quizes[i].comments);
+if (quizes[i].comments.length > 0) {
+                estadisticas.numeroPreguntasConComentarios++;
+                estadisticas.numeroComentarios += quizes[i].comments.length;
+            } else {
+                estadisticas.numeroPreguntasSinComentarios++;
+            }
+        };
+
+        if (estadisticas.numeroPreguntas > 0) {
+            estadisticas.mediaComentarios = estadisticas.numeroComentarios / estadisticas.numeroPreguntas;
+        }
+
+
+  
+
+
+        res.render('quizes/estadisticas', {
+            statistics: estadisticas,
+            title: 'Quizes',
+            errors: []
+        });
+    }).catch(function(error) {
+        console.log(error);
+        next(error);
+    });
 };
